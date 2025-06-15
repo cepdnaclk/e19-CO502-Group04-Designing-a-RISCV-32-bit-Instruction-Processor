@@ -1,7 +1,7 @@
 ___
-# DELETE THIS INSTRUCTIONS AND ADD A SHORT INTRODUCTION ABOUT YOUR PROJECT
+# RISCV 32bit Instruction Processor
 ___
 
-## Please refer the instructions in below URL:
+## Here RISCV 32I and 32M instructions are implemented
 
 https://projects.ce.pdn.ac.lk/docs/how-to-add-a-project
