@@ -1,50 +1,46 @@
 `timescale 1ns/1ps
 
-module LoadConverter_tb;
+module tb_LoadConverter;
 
-    // Testbench signals
     reg  [31:0] inputData;
     reg  [5:0]  aluSelect;
     wire [31:0] outputData;
 
-    // Instantiate the LoadUnit
-    LoadConverter dut (
+    // Instantiate the module
+    LoadConverter uut (
         .inputData(inputData),
         .aluSelect(aluSelect),
         .outputData(outputData)
     );
 
-    // Task to run a single test case
-    task run_test;
-        input [5:0] select;
-        input [31:0] inData;
-        begin
-            aluSelect  = select;
-            inputData  = inData;
-            #10; // Wait for output to settle
-            $display("aluSelect = %b | inputData = 0x%h | outputData = 0x%h", aluSelect, inputData, outputData);
-        end
-    endtask
-
     initial begin
-        $display("Starting LoadUnit testbench...");
+        $display("Time\taluSelect\tinputData\t\toutputData");
 
-        // Test LB (mask to lowest byte)
-        run_test(6'b001011, 32'hDEADBEEF); // Expected output: 0x000000EF
+        // Test 1: LB (expect inputData OR 0xffffff00)
+        inputData = 32'h000000A5; // A5 = 0b10100101
+        aluSelect = 6'b001011; #10;
+        $display("%0t\tLB\t\t0x%h\t\t0x%h", $time, inputData, outputData);
 
-        // Test LH (mask to lowest halfword)
-        run_test(6'b001100, 32'hCAFEBABE); // Expected output: 0x0000BABE
+        // Test 2: LH (expect inputData OR 0xffff0000)
+        inputData = 32'h00001234;
+        aluSelect = 6'b001100; #10;
+        $display("%0t\tLH\t\t0x%h\t\t0x%h", $time, inputData, outputData);
 
-        // Test LBU (simulate zero-extended load — here using OR for placeholder)
-        run_test(6'b001110, 32'h000000AB); // Expected output: 0x111111AB (not actual LBU behavior)
+        // Test 3: LBU (expect inputData & 0x000000ff)
+        inputData = 32'hABCD00EF;
+        aluSelect = 6'b001110; #10;
+        $display("%0t\tLBU\t\t0x%h\t\t0x%h", $time, inputData, outputData);
 
-        // Test LHU (simulate zero-extended load — placeholder logic)
-        run_test(6'b001111, 32'h00001234); // Expected output: 0x11111234 (not actual LHU behavior)
+        // Test 4: LHU (expect inputData & 0x0000ffff)
+        inputData = 32'h12345678;
+        aluSelect = 6'b001111; #10;
+        $display("%0t\tLHU\t\t0x%h\t\t0x%h", $time, inputData, outputData);
 
-        // Test default passthrough
-        run_test(6'b000000, 32'h12345678); // Expected output: 0x12345678
+        // Test 5: Default passthrough
+        inputData = 32'hDEADBEEF;
+        aluSelect = 6'b000000; #10;
+        $display("%0t\tDefault\t\t0x%h\t\t0x%h", $time, inputData, outputData);
 
-        $display("Testbench complete.");
         $finish;
     end
 

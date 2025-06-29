@@ -29,6 +29,7 @@ module ControlUnit (
                 regWrite   = 1;
                 Jtype      = 1;
                 ImmSelect  = 1;
+                PCSelect   = 1;
             end
 
             7'b1100111: begin // JALR
@@ -36,6 +37,7 @@ module ControlUnit (
                 regWrite   = 1;
                 Jtype      = 1;
                 ImmSelect  = 1;
+                PCSelect   = 1;
             end
 
             7'b1100011: begin // Branch

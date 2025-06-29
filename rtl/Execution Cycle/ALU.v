@@ -43,7 +43,7 @@ module ALU (
     );
 
     Jtype jtype_inst (
-        .rs1(rs1),           // rs1 for JALR (source register)
+        .pc(rs1),           // rs1 for JALR (source register)
         .imm(rs2),           // Immediate value
         .aluSelect(aluSelect), // ALU control signal for Jtype
         .next_pc(jtype_result) // Output for next program counter

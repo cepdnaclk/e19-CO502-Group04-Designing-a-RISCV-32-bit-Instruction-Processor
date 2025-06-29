@@ -18,15 +18,15 @@ module RItype (
             6'b010101: result = (a < b) ? 32'd1 : 32'd0;   // SLTIU
 
             6'b011100: result = a + b;                    // ADD
-            6'b011101: result = a - b;                    // SUB
-            6'b100101: result = a & b;                    // AND
-            6'b100100: result = a | b;                    // OR
-            6'b100001: result = a ^ b;                    // XOR
-            6'b011110: result = a << b[4:0];              // SLL
-            6'b100010: result = a >> b[4:0];              // SRL
-            6'b100011: result = $signed(a) >>> b[4:0];    // SRA
-            6'b011111: result = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0; // SLT
-            6'b100000: result = (a < b) ? 32'd1 : 32'd0;   // SLTU
+            6'b100100: result = a - b;                    // SUB
+            6'b100011: result = a & b;                    // AND
+            6'b100010: result = a | b;                    // OR
+            6'b100000: result = a ^ b;                    // XOR
+            6'b011101: result = a << b[4:0];              // SLL
+            6'b100001: result = a >> b[4:0];              // SRL
+            6'b100101: result = $signed(a) >>> b[4:0];    // SRA
+            6'b011110: result = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0; // SLT
+            6'b011111: result = (a < b) ? 32'd1 : 32'd0;   // SLTU
             default:   result = 32'b0;
         endcase
     end

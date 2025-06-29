@@ -1,6 +1,6 @@
-`timescale 1ns / 1ps
+`timescale 1ns/1ps
 
-module muldiv_tb;
+module tb_muldiv;
 
     reg  [31:0] rs1, rs2;
     reg  [5:0]  aluSelect;
@@ -15,39 +15,48 @@ module muldiv_tb;
     );
 
     initial begin
-        $display("Starting muldiv testbench...");
-        $monitor("aluSelect = %b, rs1 = %d, rs2 = %d, result = %d", aluSelect, rs1, rs2, result);
+        $display("Time\taluSelect\trs1\t\trs2\t\tresult");
 
-        // Test MUL
-        rs1 = 32'd6; rs2 = 32'd7; aluSelect = 6'b101001; #10;
+        // Test MUL (lower 32 bits)
+        rs1 = 32'd10; rs2 = 32'd20; aluSelect = 6'b100110; #10;
+        $display("%0t\tMUL\t\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        // Test MULH (signed * signed)
-        rs1 = -32'sd10; rs2 = 32'sd100000; aluSelect = 6'b101010; #10;
+        // Test MULH (signed * signed upper 32 bits)
+        rs1 = -32'd8; rs2 = 32'd7; aluSelect = 6'b100111; #10;
+        $display("%0t\tMULH\t\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        // Test MULHSU (signed * unsigned)
-        rs1 = -32'sd10; rs2 = 32'd100000; aluSelect = 6'b101011; #10;
+        // Test MULHSU (signed rs1 * unsigned rs2)
+        rs1 = -32'd8; rs2 = 32'd7; aluSelect = 6'b101000; #10;
+        $display("%0t\tMULHSU\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        // Test MULHU (unsigned * unsigned)
-        rs1 = 32'd50000; rs2 = 32'd100000; aluSelect = 6'b101100; #10;
+        // Test MULHU (unsigned * unsigned upper 32 bits)
+        rs1 = 32'hFFFFFFFF; rs2 = 32'd2; aluSelect = 6'b101001; #10;
+        $display("%0t\tMULHU\t\t%h\t%h\t%h", $time, rs1, rs2, result);
 
-        // Test DIV (signed)
-        rs1 = -32'sd100; rs2 = 32'sd25; aluSelect = 6'b101101; #10;
+        // Test DIV (signed division)
+        rs1 = -32'd40; rs2 = 32'd5; aluSelect = 6'b101010; #10;
+        $display("%0t\tDIV\t\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        // Test DIVU (unsigned)
-        rs1 = 32'd100; rs2 = 32'd25; aluSelect = 6'b101110; #10;
+        // Test DIVU (unsigned division)
+        rs1 = 32'hFFFFFFFE; rs2 = 32'd2; aluSelect = 6'b101011; #10;
+        $display("%0t\tDIVU\t\t%h\t%h\t%h", $time, rs1, rs2, result);
 
-        // Test REM (signed)
-        rs1 = -32'sd101; rs2 = 32'sd20; aluSelect = 6'b101111; #10;
+        // Test REM (signed remainder)
+        rs1 = -32'd17; rs2 = 32'd4; aluSelect = 6'b101100; #10;
+        $display("%0t\tREM\t\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        // Test REMU (unsigned)
-        rs1 = 32'd101; rs2 = 32'd20; aluSelect = 6'b110000; #10;
+        // Test REMU (unsigned remainder)
+        rs1 = 32'd17; rs2 = 32'd4; aluSelect = 6'b101101; #10;
+        $display("%0t\tREMU\t\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        // Test division by zero
-        rs1 = 32'd123; rs2 = 32'd0; aluSelect = 6'b101101; #10; // DIV by zero
-        rs1 = 32'd123; rs2 = 32'd0; aluSelect = 6'b101111; #10; // REM by zero
+        // Division by zero cases
+        rs1 = 32'd42; rs2 = 0; aluSelect = 6'b101010; #10;
+        $display("%0t\tDIV/0\t\t%d\t%d\t%d", $time, rs1, rs2, result);
 
-        $display("Testbench completed.");
-        $stop;
+        rs1 = 32'd42; rs2 = 0; aluSelect = 6'b101011; #10;
+        $display("%0t\tDIVU/0\t\t%d\t%d\t%d", $time, rs1, rs2, result);
+
+        $finish;
     end
 
 endmodule

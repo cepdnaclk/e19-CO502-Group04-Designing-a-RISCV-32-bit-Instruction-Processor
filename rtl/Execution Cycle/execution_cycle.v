@@ -20,27 +20,27 @@ module execution_cycle(PCD, WriteAddressD, WriteAddressM, ImmGenOutD, RegOut2D, 
 
     Mux Mux2E(
         .select(ImmSelectD), 
-        .A(RegOut2D), 
-        .B(ImmGenOutD), 
+        .B(RegOut2D), 
+        .A(ImmGenOutD), 
         .Mux_out(Mux2outE)
     );
     
     Mux Mux1E(
         .select(PCSelectD), 
-        .A(RegOut1D), 
-        .B(PCD), 
+        .B(RegOut1D), 
+        .A(PCD), 
         .Mux_out(Mux1outE)
     );
 
     StoreConverter StoreConverterE(
-        .inputData(RegOut1D),
+        .inputData(RegOut2D),
         .aluSelect(ALUSelectD),
         .outputData(StoreCounterOutM)
     );
 
     ALU ALUE(
-        .rs1(Mux2outE),             // First source register (32-bit)
-        .rs2(Mux1outE),             // Second source register (32-bit)
+        .rs1(Mux1outE),             // First source register (32-bit)
+        .rs2(Mux2outE),             // Second source register (32-bit)
         .aluSelect(ALUSelectD),        // ALU control signal (6-bit)
         .result(ALUOutM),      // ALU result (32-bit)
         .branch_taken(BranchM)            // Branch decision (1 bit)

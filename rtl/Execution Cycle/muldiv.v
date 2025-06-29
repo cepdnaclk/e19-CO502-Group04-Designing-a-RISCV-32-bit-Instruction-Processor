@@ -11,14 +11,14 @@ module muldiv(
 
     always @(*) begin
         case (aluSelect)
-            6'b101001: result = rs1 * rs2;                                // MUL (lower 32 bits)
-            6'b101010: result = signed_product[63:32];                    // MULH
-            6'b101011: result = signed_product1[63:32];                   // MULHSU
-            6'b101100: result = unsigned_product[63:32];                  // MULHU
-            6'b101101: result = (rs2 != 0) ? $signed(rs1) / $signed(rs2) : 32'b0; // DIV
-            6'b101110: result = (rs2 != 0) ? rs1 / rs2 : 32'b0;           // DIVU
-            6'b101111: result = (rs2 != 0) ? $signed(rs1) % $signed(rs2) : 32'b0; // REM
-            6'b110000: result = (rs2 != 0) ? rs1 % rs2 : 32'b0;           // REMU
+            6'b100110: result = rs1 * rs2;                                // MUL (lower 32 bits)
+            6'b100111: result = signed_product[63:32];                    // MULH
+            6'b101000: result = signed_product1[63:32];                   // MULHSU
+            6'b101001: result = unsigned_product[63:32];                  // MULHU
+            6'b101010: result = (rs2 != 0) ? $signed(rs1) / $signed(rs2) : 32'b0; // DIV
+            6'b101011: result = (rs2 != 0) ? rs1 / rs2 : 32'b0;           // DIVU
+            6'b101100: result = (rs2 != 0) ? $signed(rs1) % $signed(rs2) : 32'b0; // REM
+            6'b101101: result = (rs2 != 0) ? rs1 % rs2 : 32'b0;           // REMU
             default:    result = 32'b0;
         endcase
     end

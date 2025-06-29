@@ -28,5 +28,6 @@ module Mem_cycle(clk, reset, PCPlusImmE, JtypeE, RegWriteE, MemWriteE, MemReadE,
     assign ALUSelectW = ALUSelectE;
     assign WriteAddressW = WriteAddressE;
     assign BranchF = BranchE;
+    assign MemReadW = MemReadE;
 
 endmodule

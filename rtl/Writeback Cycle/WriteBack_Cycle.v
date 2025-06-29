@@ -37,5 +37,6 @@ module writeBack_cycle(RegWriteM, JtypeM, MemReadM, DataMemOutM, ALUOutM, ALUSel
     );
 
     assign WriteAddressD = WriteAddressM;
+    assign RegWriteD = RegWriteM;
 
 endmodule
