@@ -1,12 +1,12 @@
-module writeBack_cycle(RegWriteM, JtypeM, MemReadM, DataMemOutM, ALUOutM, ALUSelectM, WriteAddressM, RegWriteD, RegInDataD, WriteAddressD);
+module writeBack_cycle(RegWriteM, JtypeM, MemReadM, DataMemOutM, ALUOutM, ALUSelectM, WriteAddressM, RegWriteD, RegInDataD, WriteAddressD, RegWrite2FU, ResultOut2E, WriteAddress2FU);
 
     input [31:0] DataMemOutM, ALUOutM;
     input [5:0] ALUSelectM;
     input [4:0] WriteAddressM;
     input RegWriteM, JtypeM, MemReadM;
-    output [31:0] RegInDataD;
-    output [4:0] WriteAddressD;
-    output RegWriteD;
+    output [31:0] RegInDataD, ResultOut2E;
+    output [4:0] WriteAddressD, WriteAddress2FU;
+    output RegWriteD, RegWrite2FU;
 
     wire [31:0] LoadConverterDataW, Load2AdderW, Adder2Mux;
 
@@ -38,5 +38,8 @@ module writeBack_cycle(RegWriteM, JtypeM, MemReadM, DataMemOutM, ALUOutM, ALUSel
 
     assign WriteAddressD = WriteAddressM;
     assign RegWriteD = RegWriteM;
+    assign RegWrite2FU = RegWriteD;
+    assign WriteAddress2FU = WriteAddressM;
+    assign ResultOut2E = ALUOutM;
 
 endmodule

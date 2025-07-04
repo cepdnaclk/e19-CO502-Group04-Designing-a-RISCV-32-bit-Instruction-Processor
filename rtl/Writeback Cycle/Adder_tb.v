@@ -16,6 +16,10 @@ module Adder_tb;
 
     // Test procedure
     initial begin
+        // Setup waveform dumping
+        $dumpfile("Adder_Wave.vcd");      // VCD file name
+        $dumpvars(0, Adder_tb);           // Dump all signals in Adder_tb and its instances
+
         $display("Time\tin_1\t\tin_2\t\tSum_out");
         $monitor("%0dns\t%h\t%h\t%h", $time, in_1, in_2, Sum_out);
 
