@@ -6,8 +6,8 @@ module execution_cycle(
     input JtypeD, RegWriteD, MemReadD, MemWriteD, ImmSelectD, PCSelectD,
     output [31:0] PCPlusImmM, ALUOutM, StoreCounterOutM,
     output [5:0] ALUSelectM,
-    output [4:0] WriteAddressM, Rs1FU, Rs2FU,
-    output JtypeM, RegWriteM, MemReadM, MemWriteM, BranchM
+    output [4:0] WriteAddressM, Rs1FU, Rs2FU, RdE2HDU,
+    output JtypeM, RegWriteM, MemReadM, MemWriteM, BranchM, MemReadE2HDU
 );
 
     wire [31:0] ShifterOutE;
@@ -84,5 +84,7 @@ module execution_cycle(
     assign MemReadM = MemReadD;
     assign MemWriteM = MemWriteD;
     assign ALUSelectM = ALUSelectD;
+    assign RdE2HDU = WriteAddressD; // For Hazard Detection Unit
+    assign MemReadE2HDU = MemReadD; // For Hazard Detection Unit
 
 endmodule

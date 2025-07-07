@@ -26,8 +26,12 @@ module top_cpu(input clk, input reset);
     wire [4:0] Rs1E2FU, Rs2E2FU, Rs1E, Rs2E;
     wire [1:0] ForwardAE, ForwardBE;
 
+    wire [4:0] Rs1D2HDU, Rs2D2HDU, RdE2HDU; // For Hazard Detection Unit
+    wire MemReadE2HDU, StallF, StallD, FlushE;
+
     // Module instantiations
     Fetch_cycle fetch_cycle_Imp (
+        .StallF(StallF),
         .clk(clk), 
         .reset(reset), 
         .PCD(PCD), 
@@ -59,7 +63,10 @@ module top_cpu(input clk, input reset);
         .RegWriteW(RegWrite), 
         .writeDataW(RegInData),
         .Rs1E(Rs1E),
-        .Rs2E(Rs2E)
+        .Rs2E(Rs2E),
+        .Rs1D2HDU(Rs1D2HDU),
+        .Rs2D2HDU(Rs2D2HDU),
+        .FlushE(FlushE)
     );
 
     execution_cycle execution_cycle_Imp (
@@ -92,7 +99,9 @@ module top_cpu(input clk, input reset);
         .ALUOutfromM(ALUOutfromM),
         .ResultOutfromWB(ResultOutfromWB),
         .Rs1D(Rs1D2E),
-        .Rs2D(Rs2D2E)
+        .Rs2D(Rs2D2E),
+        .RdE2HDU(RdE2HDU),
+        .MemReadE2HDU(MemReadE2HDU)
     );
 
     Mem_cycle Mem_cycle_Imp (
@@ -150,6 +159,17 @@ module top_cpu(input clk, input reset);
         .Rs2_E(Rs2E2FU), 
         .ForwardAE(ForwardAE), 
         .ForwardBE(ForwardBE));
+
+    Hazard_Detection_Unit HDU_Imp(
+        .Rs1D2HDU(Rs1D2HDU),
+        .Rs2D2HDU(Rs2D2HDU),
+        .RdE2HDU(RdE2HDU),
+        .MemReadE2HDU(MemReadE2HDU),
+
+        .StallF(StallF),
+        .StallD(StallD),
+        .FlushE(FlushE)
+    );
 
     // Always blocks
     MEM_WB_Register MEM_WB_Register_Inst (
@@ -242,6 +262,7 @@ module top_cpu(input clk, input reset);
     );
 
     IF_ID_Register IF_ID_Register_Inst (
+        .StallD(StallD), // Stall signal from Hazard Detection Unit
         .clk(clk),
         .reset(reset),
         .PCD(PCD),        // PC from Fetch stage

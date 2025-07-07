@@ -1,6 +1,6 @@
-module Fetch_cycle(clk, reset, PCPlusImmM, ALUOutM, BranchM, JtypeM, PCD, InstrD);
+module Fetch_cycle(clk, reset, PCPlusImmM, ALUOutM, BranchM, JtypeM, PCD, InstrD, StallF);
 
-    input clk, reset, BranchM, JtypeM;
+    input clk, reset, BranchM, JtypeM, StallF;
     input [31:0] PCPlusImmM, ALUOutM;
     output [31:0] PCD, InstrD;
 
@@ -21,6 +21,7 @@ module Fetch_cycle(clk, reset, PCPlusImmM, ALUOutM, BranchM, JtypeM, PCD, InstrD
             );
 
     Program_Counter Program_Counter_Fetch(
+            .StallF(StallF),
             .clk(clk), 
             .reset(reset), 
             .PC_in(PCInF), 
