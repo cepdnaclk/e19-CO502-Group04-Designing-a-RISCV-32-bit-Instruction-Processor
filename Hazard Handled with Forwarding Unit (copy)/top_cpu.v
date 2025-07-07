@@ -1,16 +1,16 @@
 module top_cpu(input clk, input reset);
 
     // Internal registers
-    reg [31:0] PCF2D, InstrF2D, ReadOut1D2E, ReadOut2D2E, ImmGenOutD2E, PCD2E;
-    reg [31:0] ALUOutE2M, StoreCounterOutE2M, PCPlusImmE2M;
-    reg [31:0] DataMemOutM2W, ALUOutM2W;
+    wire [31:0] PCF2D, InstrF2D, ReadOut1D2E, ReadOut2D2E, ImmGenOutD2E, PCD2E;
+    wire [31:0] ALUOutE2M, StoreCounterOutE2M, PCPlusImmE2M;
+    wire [31:0] DataMemOutM2W, ALUOutM2W;
 
-    reg JtypeD2E, RegWriteD2E, PCSelectD2E, ImmSelectD2E, MemReadD2E, MemWriteD2E;
-    reg JtypeE2M, RegWriteE2M, MemReadE2M, MemWriteE2M, BranchE2M;
-    reg JtypeM2W, RegWriteM2W, MemReadM2W;
+    wire JtypeD2E, RegWriteD2E, PCSelectD2E, ImmSelectD2E, MemReadD2E, MemWriteD2E;
+    wire JtypeE2M, RegWriteE2M, MemReadE2M, MemWriteE2M, BranchE2M;
+    wire JtypeM2W, RegWriteM2W, MemReadM2W;
 
-    reg [5:0] ALUSelectD2E, ALUSelectE2M, ALUSelectM2W;
-    reg [4:0] WriteAddressD2E, WriteAddressE2M, WriteAddressM2W, Rs1D2E, Rs2D2E;
+    wire [5:0] ALUSelectD2E, ALUSelectE2M, ALUSelectM2W;
+    wire [4:0] WriteAddressD2E, WriteAddressE2M, WriteAddressM2W, Rs1D2E, Rs2D2E;
 
     // Internal wires
     wire [31:0] PCD, InstrD, ReadOut1E, ReadOut2E, ImmGenOutE, PCE, ALUOutfromM, ResultOutfromWB;
@@ -152,96 +152,102 @@ module top_cpu(input clk, input reset);
         .ForwardBE(ForwardBE));
 
     // Always blocks
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            JtypeM2W <= 0;
-            RegWriteM2W <= 0;
-            MemReadM2W <= 0;
-            DataMemOutM2W <= 0;
-            ALUOutM2W <= 0;
-            ALUSelectM2W <= 0;
-            WriteAddressM2W <= 0;
-        end else begin
-            JtypeM2W <= JtypeW;
-            RegWriteM2W <= RegWriteW;
-            MemReadM2W <= MemReadW;
-            DataMemOutM2W <= DataMemOutW;
-            ALUOutM2W <= ALUOutW;
-            ALUSelectM2W <= ALUSelectW;
-            WriteAddressM2W <= WriteAddressW;
-        end
-    end
+    MEM_WB_Register MEM_WB_Register_Inst (
+        .clk(clk),
+        .reset(reset),
 
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            WriteAddressE2M <= 0;
-            JtypeE2M <= 0;
-            RegWriteE2M <= 0;
-            MemReadE2M <= 0;
-            MemWriteE2M <= 0;
-            BranchE2M <= 0;
-            ALUSelectE2M <= 0;
-            ALUOutE2M <= 0;
-            StoreCounterOutE2M <= 0;
-            PCPlusImmE2M <= 0;
-        end else begin
-            WriteAddressE2M <= WriteAddressM;
-            JtypeE2M <= JtypeM;
-            RegWriteE2M <= RegWriteM;
-            MemReadE2M <= MemReadM;
-            MemWriteE2M <= MemWriteM;
-            BranchE2M <= BranchM;
-            ALUSelectE2M <= ALUSelectM;
-            ALUOutE2M <= ALUOutM;
-            StoreCounterOutE2M <= StoreCounterOutM;
-            PCPlusImmE2M <= PCPlusImmM;
-        end
-    end
+        // Inputs from Memory stage
+        .JtypeW(JtypeW),
+        .RegWriteW(RegWriteW),
+        .MemReadW(MemReadW),
+        .DataMemOutW(DataMemOutW),
+        .ALUOutW(ALUOutW),
+        .ALUSelectW(ALUSelectW),
+        .WriteAddressW(WriteAddressW),
 
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            WriteAddressD2E <= 0;
-            JtypeD2E <= 0;
-            RegWriteD2E <= 0;
-            ALUSelectD2E <= 0;
-            PCSelectD2E <= 0;
-            ImmSelectD2E <= 0;
-            MemReadD2E <= 0;
-            MemWriteD2E <= 0;
-            ReadOut1D2E <= 0;
-            ReadOut2D2E <= 0;
-            ImmGenOutD2E <= 0;
-            PCD2E <= 0;
-            Rs1D2E <= 0;
-            Rs2D2E <= 0;
-        end else begin
-            WriteAddressD2E <= WriteAddressE;
-            JtypeD2E <= JtypeE;
-            RegWriteD2E <= RegWriteE;
-            ALUSelectD2E <= ALUSelectE;
-            PCSelectD2E <= PCSelectE;
-            ImmSelectD2E <= ImmSelectE;
-            MemReadD2E <= MemReadE;
-            MemWriteD2E <= MemWriteE;
-            ReadOut1D2E <= ReadOut1E;
-            ReadOut2D2E <= ReadOut2E;
-            ImmGenOutD2E <= ImmGenOutE;
-            PCD2E <= PCE;
-            Rs1D2E <= Rs1E;
-            Rs2D2E <= Rs2E;
-        end
-    end
+        // Outputs to WriteBack stage
+        .JtypeM2W(JtypeM2W),
+        .RegWriteM2W(RegWriteM2W),
+        .MemReadM2W(MemReadM2W),
+        .DataMemOutM2W(DataMemOutM2W),
+        .ALUOutM2W(ALUOutM2W),
+        .ALUSelectM2W(ALUSelectM2W),
+        .WriteAddressM2W(WriteAddressM2W)
+);
 
+    EX_MEM_Register EX_MEM_Register_Inst (
+        .clk(clk),
+        .reset(reset),
 
+        // Inputs from Execute stage
+        .WriteAddressM(WriteAddressM),
+        .JtypeM(JtypeM),
+        .RegWriteM(RegWriteM),
+        .MemReadM(MemReadM),
+        .MemWriteM(MemWriteM),
+        .BranchM(BranchM),
+        .ALUSelectM(ALUSelectM),
+        .ALUOutM(ALUOutM),
+        .StoreCounterOutM(StoreCounterOutM),
+        .PCPlusImmM(PCPlusImmM),
 
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            PCF2D <= 0;
-            InstrF2D <= 0;
-        end else begin
-            PCF2D <= PCD;
-            InstrF2D <= InstrD;
-        end
-    end
+        // Outputs to Memory stage
+        .WriteAddressE2M(WriteAddressE2M),
+        .JtypeE2M(JtypeE2M),
+        .RegWriteE2M(RegWriteE2M),
+        .MemReadE2M(MemReadE2M),
+        .MemWriteE2M(MemWriteE2M),
+        .BranchE2M(BranchE2M),
+        .ALUSelectE2M(ALUSelectE2M),
+        .ALUOutE2M(ALUOutE2M),
+        .StoreCounterOutE2M(StoreCounterOutE2M),
+        .PCPlusImmE2M(PCPlusImmE2M)
+    );
+
+    ID_EX_Register ID_EX_Register_Inst (
+        .clk(clk),
+        .reset(reset),
+
+        // Inputs from Decode stage
+        .WriteAddressE(WriteAddressE),
+        .JtypeE(JtypeE),
+        .RegWriteE(RegWriteE),
+        .ALUSelectE(ALUSelectE),
+        .PCSelectE(PCSelectE),
+        .ImmSelectE(ImmSelectE),
+        .MemReadE(MemReadE),
+        .MemWriteE(MemWriteE),
+        .ReadOut1E(ReadOut1E),
+        .ReadOut2E(ReadOut2E),
+        .ImmGenOutE(ImmGenOutE),
+        .PCE(PCE),
+        .Rs1E(Rs1E),
+        .Rs2E(Rs2E),
+
+        // Outputs to Execute stage
+        .WriteAddressD2E(WriteAddressD2E),
+        .JtypeD2E(JtypeD2E),
+        .RegWriteD2E(RegWriteD2E),
+        .ALUSelectD2E(ALUSelectD2E),
+        .PCSelectD2E(PCSelectD2E),
+        .ImmSelectD2E(ImmSelectD2E),
+        .MemReadD2E(MemReadD2E),
+        .MemWriteD2E(MemWriteD2E),
+        .ReadOut1D2E(ReadOut1D2E),
+        .ReadOut2D2E(ReadOut2D2E),
+        .ImmGenOutD2E(ImmGenOutD2E),
+        .PCD2E(PCD2E),
+        .Rs1D2E(Rs1D2E),
+        .Rs2D2E(Rs2D2E)
+    );
+
+    IF_ID_Register IF_ID_Register_Inst (
+        .clk(clk),
+        .reset(reset),
+        .PCD(PCD),        // PC from Fetch stage
+        .InstrD(InstrD),     // Instruction from Fetch stage
+        .PCF2D(PCF2D),  // PC to Decode stage
+        .InstrF2D(InstrF2D) // Instruction to Decode stage
+    );
 
 endmodule

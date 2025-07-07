@@ -40,6 +40,6 @@ module writeBack_cycle(RegWriteM, JtypeM, MemReadM, DataMemOutM, ALUOutM, ALUSel
     assign RegWriteD = RegWriteM;
     assign RegWrite2FU = RegWriteD;
     assign WriteAddress2FU = WriteAddressM;
-    assign ResultOut2E = ALUOutM;
+    assign ResultOut2E = LoadConverterDataW;
 
 endmodule
