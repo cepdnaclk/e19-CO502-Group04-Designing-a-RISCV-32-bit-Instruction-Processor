@@ -44,7 +44,7 @@ module top_cpu_tb;
                 $display("x%0d = 0x%08h", i, uut.decode_cycle_Imp.Reg_File_D.reg_array[i]);
             end
             $display("Data Memory:");
-            for (i=0; i<16; i=i+1) begin
+            for (i=0; i<64; i=i+1) begin
                 $display("Mem[%0d] = 0x%08h", i, uut.Mem_cycle_Imp.DataMemoryMem.D_Memory[i]);
             end
             $display("========================");
