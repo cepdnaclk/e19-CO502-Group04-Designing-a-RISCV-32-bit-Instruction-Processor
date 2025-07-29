@@ -1,15 +1,12 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
-module ControlUnit_tb;
+module ControlUnit_tb();
 
-    // Inputs
     reg [31:0] instruction;
-
-    // Outputs
     wire [5:0] aluSelect;
     wire MemWrite, MemRead, ImmSelect, PCSelect, regWrite, Jtype;
 
-    // Instantiate the Unit Under Test (UUT)
+    // Instantiate the Control Unit
     ControlUnit uut (
         .instruction(instruction),
         .aluSelect(aluSelect),
@@ -21,88 +18,83 @@ module ControlUnit_tb;
         .Jtype(Jtype)
     );
 
-    // Task to display results
-    task print_signals;
-        begin
-            $display("Instruction: %h", instruction);
-            $display("aluSelect: %b | MemWrite: %b | MemRead: %b | ImmSelect: %b | PCSelect: %b | regWrite: %b | Jtype: %b",
-                     aluSelect, MemWrite, MemRead, ImmSelect, PCSelect, regWrite, Jtype);
-            $display("-----------------------------------------------------");
-        end
-    endtask
-
     initial begin
-        $display("Starting Control Unit Testbench...\n");
+        // Setup waveform dump
+        $dumpfile("ControlUnit_tb.vcd");
+        $dumpvars(0, ControlUnit_tb);
 
-        // Format: {funct7, rs2, rs1, funct3, rd, opcode}
-        // RV32I — R-type
-        instruction = 32'b0000000_00010_00001_000_00011_0110011; // ADD x3, x1, x2
-        #10; print_signals;
+        // Initialize input
+        instruction = 32'b0;
 
-        instruction = 32'b0100000_00010_00001_000_00011_0110011; // SUB x3, x1, x2
-        #10; print_signals;
+        // Wait some time before starting
+        #10;
 
-        instruction = 32'b0000000_00010_00001_111_00011_0110011; // AND x3, x1, x2
-        #10; print_signals;
+        // Test JAL instruction (opcode 1101111)
+        instruction = {20'd0, 12'b0000001101111}; // Only opcode bits matter here
+        #10;
 
-        // RV32I — I-type
-        instruction = 32'b000000000010_00001_000_00011_0010011; // ADDI x3, x1, 2
-        #10; print_signals;
+        // Test JALR instruction (opcode 1100111)
+        instruction = {20'd0, 12'b0000001100111};
+        #10;
 
-        instruction = 32'b000000000010_00001_111_00011_0010011; // ANDI x3, x1, 2
-        #10; print_signals;
+        // Test Branch instructions (opcode 1100011) with different funct3 values
+        // BEQ (funct3=000)
+        instruction = {20'd0, 3'b000, 4'b0000, 7'b1100011}; 
+        #10;
+        // BNE (funct3=001)
+        instruction = {20'd0, 3'b001, 4'b0000, 7'b1100011};
+        #10;
+        // BLT (funct3=100)
+        instruction = {20'd0, 3'b100, 4'b0000, 7'b1100011};
+        #10;
 
-        // RV32I — Load
-        instruction = 32'b000000000100_00001_010_00011_0000011; // LW x3, 4(x1)
-        #10; print_signals;
+        // Test Load instructions (opcode 0000011)
+        // LB (funct3=000)
+        instruction = {20'd0, 3'b000, 4'b0000, 7'b0000011};
+        #10;
+        // LW (funct3=010)
+        instruction = {20'd0, 3'b010, 4'b0000, 7'b0000011};
+        #10;
 
-        // RV32I — Store
-        instruction = 32'b0000000_00011_00001_010_00010_0100011; // SW x3, 2(x1)
-        #10; print_signals;
+        // Test Store instructions (opcode 0100011)
+        // SB (funct3=000)
+        instruction = {20'd0, 3'b000, 4'b0000, 7'b0100011};
+        #10;
+        // SW (funct3=010)
+        instruction = {20'd0, 3'b010, 4'b0000, 7'b0100011};
+        #10;
 
-        // RV32I — Branch
-        instruction = 32'b0000000_00010_00001_000_00000_1100011; // BEQ x1, x2, offset
-        #10; print_signals;
+        // Test I-type ALU (opcode 0010011), ADDI (funct3=000)
+        instruction = 32'b000000000000_00000_000_00000_0010011; 
+        #10;
 
-        // RV32I — LUI
-        instruction = 32'b00000000000000000001_00011_0110111; // LUI x3, 0x1000
-        #10; print_signals;
+        // Test R-type ALU (opcode 0110011), ADD (funct7=0000000, funct3=000)
+        instruction = 32'b0000000_00000_00000_000_00000_0110011;
+        #10;
 
-        // RV32I — AUIPC
-        instruction = 32'b00000000000000000001_00011_0010111; // AUIPC x3, 0x1000
-        #10; print_signals;
+        // Test R-type MUL (opcode 0110011), MUL (funct7=0000001, funct3=000)
+        instruction = 32'b0000001_00000_00000_000_00000_0110011;
+        #10;
 
-        // RV32I — JAL
-        instruction = 32'b00000000000000000000_00011_1101111; // JAL x3, offset
-        #10; print_signals;
+        // Test AUIPC (opcode 0010111)
+        instruction = {20'd0, 7'b0010111};
+        #10;
 
-        // RV32I — JALR
-        instruction = 32'b000000000100_00001_000_00011_1100111; // JALR x3, x1, 4
-        #10; print_signals;
+        // Test LUI (opcode 0110111)
+        instruction = {20'd0, 7'b0110111};
+        #10;
 
-        // RV32I — FENCE
-        instruction = 32'b000000000000_00000_000_00000_0001111; // FENCE
-        #10; print_signals;
+        // Test FENCE (opcode 0001111)
+        instruction = {25'd0, 7'b0001111};
+        #10;
 
-        // RV32I — ECALL
-        instruction = 32'b000000000000_00000_000_00000_1110011; // ECALL
-        #10; print_signals;
+        // Test ECALL/EBREAK (opcode 1110011)
+        instruction = {25'd0, 7'b1110011};
+        #10;
 
-        // RV32M — R-type
-        instruction = 32'b0000001_00010_00001_000_00011_0110011; // MUL x3, x1, x2
-        #10; print_signals;
-
-        instruction = 32'b0000001_00010_00001_001_00011_0110011; // MULH x3, x1, x2
-        #10; print_signals;
-
-        instruction = 32'b0000001_00010_00001_100_00011_0110011; // DIV x3, x1, x2
-        #10; print_signals;
-
-        instruction = 32'b0000001_00010_00001_110_00011_0110011; // REM x3, x1, x2
-        #10; print_signals;
-
-        $display("Testbench completed.");
+        // Finish simulation
         $finish;
     end
 
 endmodule
+

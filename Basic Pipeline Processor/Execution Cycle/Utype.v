@@ -6,9 +6,9 @@ module Utype (
 );
 
     always @(*) begin
-        case (aluSelect)
-            5'b000010: result = pc + imm_u;   // AUIPC
-            5'b000001: result = imm_u;        // LUI
+        case (aluSelect[1:0])
+            2'b10: result = pc + imm_u;   // AUIPC
+            2'b01: result = imm_u;        // LUI
             default:  result = 32'b0;
         endcase
     end

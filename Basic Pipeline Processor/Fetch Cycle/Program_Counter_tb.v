@@ -1,12 +1,14 @@
 `timescale 1ns/1ps
 
-module Program_Counter_tb;
+module tb_Program_Counter;
 
-    reg clk, reset;
+    // Testbench Signals
+    reg clk;
+    reg reset;
     reg [31:0] PC_in;
     wire [31:0] PC_out;
 
-    // Instantiate the Program Counter module
+    // Instantiate the DUT (Design Under Test)
     Program_Counter uut (
         .clk(clk),
         .reset(reset),
@@ -14,22 +16,25 @@ module Program_Counter_tb;
         .PC_out(PC_out)
     );
 
-    // Generate clock with period of 10 ns
+    // Clock Generation: 10 ns clock period
     always #5 clk = ~clk;
 
+    // Test Procedure
     initial begin
-        $display("Testing Program_Counter Module");
-        $monitor("Time = %0t | reset = %b | PC_in = %h | PC_out = %h", 
-                  $time, reset, PC_in, PC_out);
+        // VCD file for waveform viewing
+        $dumpfile("Program_Counter.vcd");
+        $dumpvars(0, tb_Program_Counter);
 
-        // Initialize signals
+        // Initial values
         clk = 0;
-        reset = 1;
-        PC_in = 32'h00000000;
-
-        #10;
         reset = 0;
+        PC_in = 0;
 
+        // Apply reset
+        #2 reset = 1;
+        #10 reset = 0;
+
+        // Apply new PC values
         #10 PC_in = 32'h00000004;
         #10 PC_in = 32'h00000008;
         #10 PC_in = 32'h0000000C;
@@ -38,10 +43,13 @@ module Program_Counter_tb;
         #10 reset = 1;
         #10 reset = 0;
 
+        // Change PC again
         #10 PC_in = 32'h00000010;
         #10 PC_in = 32'h00000014;
 
+        // Finish simulation
         #20 $finish;
     end
 
 endmodule
+

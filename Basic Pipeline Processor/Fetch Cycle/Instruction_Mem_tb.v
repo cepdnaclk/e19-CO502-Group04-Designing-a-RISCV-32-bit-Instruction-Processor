@@ -30,7 +30,7 @@ module tb_Instruction_Mem;
         #10 reset = 0;
 
         // Apply a series of read addresses
-        #10 read_address = 32'd0;   // Address 0 → word 0
+        #5 read_address = 32'd0;   // Address 0 → word 0
         #10 read_address = 32'd4;   // Address 4 → word 1
         #10 read_address = 32'd8;   // Address 8 → word 2
         #10 read_address = 32'd12;  // Address 12 → word 3

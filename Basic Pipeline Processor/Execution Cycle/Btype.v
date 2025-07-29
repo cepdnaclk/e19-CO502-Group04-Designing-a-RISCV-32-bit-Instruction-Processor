@@ -2,8 +2,7 @@ module Btype (
     input  [5:0] aluSelect,
     input  [31:0] rs1,
     input  [31:0] rs2,
-    output reg branch_taken,
-    output reg [31:0] result
+    output reg branch_taken
 );
 
     always @(*) begin

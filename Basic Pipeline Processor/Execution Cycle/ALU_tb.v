@@ -21,6 +21,10 @@ module ALU_tb;
     );
 
     initial begin
+        // === Waveform Dump ===
+        $dumpfile("alu_tb.vcd");   // Output VCD file name
+        $dumpvars(0, ALU_tb);      // Dump all variables in ALU_tb module
+
         $display("Starting ALU testbench...");
         $monitor("Time=%0t | aluSelect=%b | rs1=%h | rs2=%h | result=%h | branch_taken=%b", 
                   $time, aluSelect, rs1, rs2, result, branch_taken);
@@ -99,3 +103,4 @@ module ALU_tb;
     end
 
 endmodule
+

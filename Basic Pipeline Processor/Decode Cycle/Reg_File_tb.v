@@ -1,15 +1,21 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
 module Reg_File_tb;
 
+    // Inputs
     reg clk;
     reg reset;
     reg RegWrite;
-    reg [4:0] Rs1, Rs2, Rd;
+    reg [4:0] Rs1;
+    reg [4:0] Rs2;
+    reg [4:0] Rd;
     reg [31:0] Write_data;
-    wire [31:0] read_data1, read_data2;
 
-    // Instantiate the register file
+    // Outputs
+    wire [31:0] read_data1;
+    wire [31:0] read_data2;
+
+    // Instantiate the Unit Under Test (UUT)
     Reg_File uut (
         .clk(clk),
         .reset(reset),
@@ -22,80 +28,65 @@ module Reg_File_tb;
         .read_data2(read_data2)
     );
 
-    // Clock generation
-    initial clk = 0;
-    always #5 clk = ~clk; // 10ns period
+    // Clock Generation
+    always #5 clk = ~clk;
 
-    // Task to write to a register
-    task write_reg(input [4:0] rd, input [31:0] data);
-    begin
-        @(negedge clk);
-        RegWrite = 1;
-        Rd = rd;
-        Write_data = data;
-        @(negedge clk);
-        RegWrite = 0;
-        Rd = 0;
-        Write_data = 0;
-    end
-    endtask
-
-    // Task to read from two registers
-    task read_regs(input [4:0] rs1, input [4:0] rs2);
-    begin
-        Rs1 = rs1;
-        Rs2 = rs2;
-        @(negedge clk);
-        $display("Read: rs1=%0d -> %h, rs2=%0d -> %h", rs1, read_data1, rs2, read_data2);
-    end
-    endtask
-
+    // Test Sequence
     initial begin
-        // Initialize signals
+        // Dump waveform
+        $dumpfile("Reg_File_tb.vcd");  // VCD waveform file
+        $dumpvars(0, Reg_File_tb);     // Dump all variables
+
+        // Initialize Inputs
+        clk = 0;
+        reset = 1;
         RegWrite = 0;
-        Rd = 0;
-        Write_data = 0;
         Rs1 = 0;
         Rs2 = 0;
+        Rd = 0;
+        Write_data = 0;
 
-        // Reset the register file
-        reset = 1;
-        @(negedge clk);
+        #10;
         reset = 0;
-        $display("After reset:");
-        read_regs(0, 1);
 
-        // Write to registers 1, 2, 3
-        write_reg(1, 32'hA5A5A5A5);
-        write_reg(2, 32'h5A5A5A5A);
-        write_reg(3, 32'hDEADBEEF);
-
-        // Read back written registers
-        $display("After writing to 1, 2, 3:");
-        read_regs(1, 2);
-        read_regs(3, 0);
-
-        // Attempt to write to register 0 (should be ignored)
-        write_reg(0, 32'hFFFFFFFF);
-        $display("After attempting to write to x0:");
-        read_regs(0, 1);
-
-        // Attempt to write with RegWrite deasserted (should not change reg 2)
-        @(negedge clk);
+        // Write to register x5
+        Rd = 5;
+        Write_data = 32'hDEADBEEF;
+        RegWrite = 1;
+        #10;
         RegWrite = 0;
-        Rd = 2;
-        Write_data = 32'h12345678;
-        @(negedge clk);
-        $display("After attempting to write to reg 2 with RegWrite=0:");
-        read_regs(2, 0);
 
-        // Overwrite register 3
-        write_reg(3, 32'hCAFEBABE);
-        $display("After overwriting reg 3:");
-        read_regs(3, 0);
+        // Read back x5 into Rs1
+        Rs1 = 5;
+        Rs2 = 0;
+        #10;
 
-        $display("Testbench completed.");
+        // Attempt write to x0 (should be ignored)
+        Rd = 0;
+        Write_data = 32'hFFFFFFFF;
+        RegWrite = 1;
+        #10;
+        RegWrite = 0;
+
+        // Read x0 and x5 again
+        Rs1 = 0;
+        Rs2 = 5;
+        #10;
+
+        // Write to x10 and x15 sequentially
+        Rd = 10; Write_data = 32'hAAAA5555; RegWrite = 1;
+        #10;
+        Rd = 15; Write_data = 32'h12345678; RegWrite = 1;
+        #10;
+        RegWrite = 0;
+
+        // Read x10 and x15
+        Rs1 = 10; Rs2 = 15;
+        #10;
+
+        // Finish simulation
         $finish;
     end
 
 endmodule
+
