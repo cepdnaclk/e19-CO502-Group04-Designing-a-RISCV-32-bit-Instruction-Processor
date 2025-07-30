@@ -1,0 +1,85 @@
+ 
+****************************************
+Report : resources
+Design : top_cpu
+Version: V-2023.12-SP5-3
+Date   : Wed Jul 30 00:54:36 2025
+****************************************
+
+
+Resource Report for this hierarchy in file
+        /storage/e19455/src/forwarding_unit.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| eq_x_1         | DW_cmp         | width=5    | FU/eq_7_3 (forwarding_unit.v:7) |
+| eq_x_2         | DW_cmp         | width=5    | FU/eq_7_5 (forwarding_unit.v:7) |
+| eq_x_4         | DW_cmp         | width=5    | FU/eq_11_3 (forwarding_unit.v:11) |
+| eq_x_5         | DW_cmp         | width=5    | FU/eq_11_5 (forwarding_unit.v:11) |
+| eq_x_7         | DW_cmp         | width=5    | HDU_Imp/eq_14 (Hazard_Detection_Unit.v:14) |
+| eq_x_8         | DW_cmp         | width=5    | HDU_Imp/eq_14_2 (Hazard_Detection_Unit.v:14) |
+| eq_x_9         | DW_cmp         | width=5    | CHU_Imp/eq_24_3 (Control_Hazard_Unit.v:24) |
+| eq_x_10        | DW_cmp         | width=5    | CHU_Imp/eq_24_5 (Control_Hazard_Unit.v:24) |
+| eq_x_11        | DW_cmp         | width=5    | CHU_Imp/eq_24_7 (Control_Hazard_Unit.v:24) |
+| eq_x_13        | DW_cmp         | width=5    | CHU_Imp/eq_30_3 (Control_Hazard_Unit.v:30) |
+| eq_x_14        | DW_cmp         | width=5    | CHU_Imp/eq_30_5 (Control_Hazard_Unit.v:30) |
+| eq_x_15        | DW_cmp         | width=5    | CHU_Imp/eq_30_7 (Control_Hazard_Unit.v:30) |
+| eq_x_17        | DW_cmp         | width=32   | CHU_Imp/eq_43 (Control_Hazard_Unit.v:43) |
+| ne_x_18        | DW_cmp         | width=32   | CHU_Imp/ne_51 (Control_Hazard_Unit.v:51) |
+| lt_x_19        | DW_cmp         | width=32   | CHU_Imp/lt_59 (Control_Hazard_Unit.v:59) |
+| gte_x_20       | DW_cmp         | width=32   | CHU_Imp/gte_67 (Control_Hazard_Unit.v:67) |
+| lt_x_21        | DW_cmp         | width=32   | CHU_Imp/lt_75 (Control_Hazard_Unit.v:75) |
+| gte_x_22       | DW_cmp         | width=32   | CHU_Imp/gte_82 (Control_Hazard_Unit.v:82) |
+| add_x_29       | DW01_add       | width=32   | writeBack_cycle_Imp/AdderW/add_6 (Adder.v:6) |
+| DP_OP_107_126_3889              |            |                            |
+|                | DP_OP_107_126_3889 |        |                            |
+=============================================================================
+
+Datapath Report for DP_OP_107_126_3889
+==============================================================================
+| Cell                 | Contained Operations                                |
+==============================================================================
+| DP_OP_107_126_3889   | CHU_Imp/add_46 (Control_Hazard_Unit.v:46)           |
+|                      | CHU_Imp/add_54 (Control_Hazard_Unit.v:54)           |
+|                      | CHU_Imp/add_62 (Control_Hazard_Unit.v:62)           |
+|                      | CHU_Imp/add_70 (Control_Hazard_Unit.v:70)           |
+|                      | CHU_Imp/add_78 (Control_Hazard_Unit.v:78)           |
+|                      | CHU_Imp/add_85 (Control_Hazard_Unit.v:85)           |
+|                      | CHU_Imp/add_90 (Control_Hazard_Unit.v:90)           |
+|                      | CHU_Imp/add_96 (Control_Hazard_Unit.v:96)           |
+|                      | fetch_cycle_Imp/PCPlus4/add_6 (Adder.v:6)           |
+==============================================================================
+
+==============================================================================
+|       |      | Data     |       |                                          |
+| Var   | Type | Class    | Width | Expression                               |
+==============================================================================
+| I1    | PI   | Unsigned | 32    |                                          |
+| I2    | PI   | Unsigned | 32    |                                          |
+| O1    | PO   | Unsigned | 32    | I1 + I2 ( Adder.v:6 Adder.v:46 Adder.v:54 Adder.v:62 Adder.v:70 Adder.v:78 Adder.v:85 Adder.v:90 Adder.v:96 ) |
+==============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| eq_x_1             | DW_cmp           | apparch (area)     |                |
+| eq_x_2             | DW_cmp           | apparch (area)     |                |
+| eq_x_4             | DW_cmp           | apparch (area)     |                |
+| eq_x_5             | DW_cmp           | apparch (area)     |                |
+| eq_x_7             | DW_cmp           | apparch (area)     |                |
+| eq_x_8             | DW_cmp           | apparch (area)     |                |
+| eq_x_9             | DW_cmp           | apparch (area)     |                |
+| eq_x_10            | DW_cmp           | apparch (area)     |                |
+| eq_x_11            | DW_cmp           | apparch (area)     |                |
+| eq_x_13            | DW_cmp           | apparch (area)     |                |
+| eq_x_14            | DW_cmp           | apparch (area)     |                |
+| eq_x_15            | DW_cmp           | apparch (area)     |                |
+| eq_x_17            | DW_cmp           | apparch (area)     |                |
+| ne_x_18            | DW_cmp           | apparch (area)     |                |
+| DP_OP_107_126_3889 | DP_OP_107_126_3889 | str (area,speed) |                |
+===============================================================================
+
+

@@ -1,0 +1,54 @@
+
+****************************************
+Report : power
+        -analysis_effort low
+Design : top_cpu
+Version: V-2023.12-SP5-3
+Date   : Wed Jul 30 16:02:28 2025
+****************************************
+
+
+Library(s) Used:
+    saed32hvt_ss0p75vn40c.db
+
+Operating Conditions:
+    Condition Name      : ss0p75vn40c
+    Library             : saed32hvt_ss0p75vn40c
+    Temperature         : -40.00 °C
+    Voltage             : 0.75 V
+
+Wire Load Model Mode:
+    ForQA
+
+Global Operating Voltage = 0.75
+
+Power-specific unit information:
+    Voltage Units        = V
+    Capacitance Units    = pF
+    Time Units           = ns
+    Dynamic Power Units  = uW (derived from V, C, T units)
+    Leakage Power Units  = uW
+
+Attributes:
+    i - Including register clock pin internal power
+
+  Cell Internal Power  =   127.3450 uW
+  Net Switching Power  =    88.2764 uW
+                         ----------------
+Total Dynamic Power    =   215.6214 uW
+
+Cell Leakage Power     =    43.8970 uW
+
+--------------------------------------------------------------------------------------------------
+                 Internal         Switching           Leakage            Total
+Power Group      Power (uW)       Power (uW)          Power (uW)         Power (uW)   (%)   Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             10.6521            8.9834            2.7603              22.3958   ( 10.4%)
+memory             12.0090           10.2842            3.5461              25.8393   ( 12.0%)
+black_box           0.0000            0.0000            0.0000               0.0000   (  0.0%)
+clock_network      31.2853           23.6128            6.2193              61.1174   ( 28.4%)  i
+register           18.2228           14.9287            4.0025              37.1540   ( 17.3%)
+sequential         25.8107           18.6414            5.0149              49.4670   ( 22.9%)
+combinational       9.3651            5.8260            2.3539              17.5450   (  8.1%)
+--------------------------------------------------------------------------------------------------
+Total             127.3450           88.2764           43.8970             259.5184   (100.0%)
